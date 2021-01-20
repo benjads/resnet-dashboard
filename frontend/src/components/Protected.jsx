@@ -8,15 +8,17 @@ function Protected({ children }) {
 
   useEffect(() => {
     const user = localStorage.getItem('resdashUser');
-    console.log(user);
 
     if (!user) {
       setRedirect(true);
     } else {
+      console.log('Sending verify request (in Protected)');
+
+      const { token } = JSON.parse(user);
       fetch('http://localhost:9000/auth/verify', {
         method: 'GET',
         headers: {
-          'X-Access-Token': user.token,
+          'X-Access-Token': token,
         },
       }).then((res) => {
         if (res.status === 200) {

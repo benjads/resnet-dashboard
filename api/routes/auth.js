@@ -9,17 +9,18 @@ const router = express.Router();
 Middleware: authenticated users only
  */
 const withAuth = (req, res, next) => {
-  const token = req.body.token
-      || req.query.token
-      || req.headers['X-Access-Token']
-      || req.cookies.token;
+  const token = req.headers['x-access-token'];
 
   if (!token) {
-    res.sendStatus(401);
+    res.status(401).json({
+      error: 'Auth request did not include a web token',
+    });
   } else {
     jwt.verify(token, process.env.TOKEN_SECRET, (err, decoded) => {
       if (err) {
-        res.sendStatus(401);
+        res.status(401).json({
+          error: 'Error processing web token',
+        });
         return;
       }
 
@@ -105,7 +106,7 @@ router.post('/login', (req, res) => {
 
           const { firstName, lastName } = user;
 
-          res.status(200).send({
+          res.status(200).json({
             cruzid, firstName, lastName, token,
           });
         }

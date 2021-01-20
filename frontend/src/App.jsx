@@ -12,12 +12,12 @@ import Protected from './components/Protected';
 
 function App() {
   const [alert, setAlert] = useState(null);
-  const [user, setUser] = useState(localStorage.getItem('resdashUser'));
+  const [user, setUser] = useState(JSON.parse(localStorage.getItem('resdashUser')));
 
   return (
     <Router>
       <div>
-        <TopNav user={user} />
+        <TopNav setUser={setUser} user={user} />
         {alert ? <GlobalAlert alert={alert} /> : null}
 
         <Switch>

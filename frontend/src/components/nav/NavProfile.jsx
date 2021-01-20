@@ -2,11 +2,17 @@ import React from 'react';
 import * as PropTypes from 'prop-types';
 import { Nav, NavDropdown } from 'react-bootstrap';
 
-function NavProfile({ user }) {
+function NavProfile({ user, setUser }) {
+  function logout(e) {
+    e.preventDefault();
+    localStorage.removeItem('resdashUser');
+    setUser(null);
+  }
+
   if (user) {
     return (
       <NavDropdown title={`${user.firstName} ${user.lastName}`} id="user-nav-dropdown">
-        <NavDropdown.Item>Logout</NavDropdown.Item>
+        <NavDropdown.Item onClick={logout}>Logout</NavDropdown.Item>
       </NavDropdown>
     );
   }
@@ -20,6 +26,7 @@ NavProfile.propTypes = {
     lastName: PropTypes.string,
     token: PropTypes.string,
   }),
+  setUser: PropTypes.func.isRequired,
 };
 
 NavProfile.defaultProps = {
