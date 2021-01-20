@@ -9,14 +9,17 @@ const router = express.Router();
 Middleware: authenticated users only
  */
 const withAuth = (req, res, next) => {
-  const { token } = req.cookies;
+  const token = req.body.token
+      || req.query.token
+      || req.headers['X-Access-Token']
+      || req.cookies.token;
 
   if (!token) {
-    res.status(401);
+    res.sendStatus(401);
   } else {
     jwt.verify(token, process.env.TOKEN_SECRET, (err, decoded) => {
       if (err) {
-        res.status(401);
+        res.sendStatus(401);
         return;
       }
 
@@ -58,10 +61,11 @@ router.post('/add', (req, res) => {
 
   user.save((err) => {
     if (err) {
-      console.log(err);
-      res.status(500).send('Error register a new user!');
+      res.status(500).json({
+        error: 'Internal server error while registering new user!',
+      });
     } else {
-      res.status(200).send('User successfully registered');
+      res.status(200);
     }
   });
 });
@@ -70,29 +74,51 @@ router.post('/add', (req, res) => {
 Route: main login page
  */
 router.post('/login', (req, res) => {
-  const { cruzid, password, role } = req.body;
+  const { cruzid, password } = req.body;
 
   User.findOne({ cruzid }, (dbErr, user) => {
     if (dbErr) {
-      res.status(500);
+      res.status(500).json({
+        error: 'Internal server error.',
+      });
     } else if (!user) {
-      res.status(401);
+      res.status(401).json({
+        error: 'Invalid username/password!',
+      });
     } else {
       user.isCorrectPassword(password, (cryptErr, same) => {
         if (cryptErr) {
-          res.status(500);
+          res.status(500).json({
+            error: 'Internal server error.',
+          });
         } else if (!same) {
-          res.status(401);
+          res.status(401).json({
+            error: 'Invalid username/password!',
+          });
         } else {
-          const payload = { cruzid, role };
+          const payload = {
+            cruzid,
+          };
           const token = jwt.sign(payload, process.env.TOKEN_SECRET, {
             expiresIn: '1h',
           });
-          res.cookie('token', token, { httpOnly: true }).sendStatus(200);
+
+          const { firstName, lastName } = user;
+
+          res.status(200).send({
+            cruzid, firstName, lastName, token,
+          });
         }
       });
     }
   });
+});
+
+/*
+Route: verify validity of client token
+ */
+router.get('/verify', withAuth, (req, res) => {
+  res.sendStatus(200);
 });
 
 module.exports = router;

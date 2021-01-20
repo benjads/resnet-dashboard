@@ -2,6 +2,7 @@ const express = require('express');
 require('dotenv').config();
 const path = require('path');
 const cookieParser = require('cookie-parser');
+const cors = require('cors');
 const logger = require('morgan');
 const mongoose = require('mongoose');
 
@@ -14,6 +15,18 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+
+const whitelist = ['http://localhost:3000', 'http://localhost:9000'];
+const corsOptions = {
+  origin(origin, callback) {
+    if (whitelist.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+};
+app.use(cors(corsOptions));
 
 const mongoUri = 'mongodb://localhost/resdash';
 mongoose.connect(mongoUri, { useNewUrlParser: true }, (err) => {
