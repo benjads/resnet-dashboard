@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import * as PropTypes from 'prop-types';
 import { Redirect } from 'react-router-dom';
 import LoginForm from '../LoginForm';
 
-function PageLogin({ setAlert, setUser }) {
+function PageLogin() {
   const [redirect, setRedirect] = useState(false);
 
   useEffect(() => {
@@ -19,14 +18,9 @@ function PageLogin({ setAlert, setUser }) {
 
   return (
     <>
-      <LoginForm setAlert={setAlert} setUser={setUser} />
+      <LoginForm />
     </>
   );
 }
-
-PageLogin.propTypes = {
-  setAlert: PropTypes.func.isRequired,
-  setUser: PropTypes.func.isRequired,
-};
 
 export default PageLogin;

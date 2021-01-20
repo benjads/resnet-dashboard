@@ -1,36 +1,25 @@
-import React from 'react';
-import * as PropTypes from 'prop-types';
+import React, { useContext } from 'react';
 import { Nav, NavDropdown } from 'react-bootstrap';
+import { logout, UserContext } from '../../users';
+import { GAlertContext } from '../GlobalAlert';
 
-function NavProfile({ user, setUser }) {
-  function logout(e) {
+function NavProfile() {
+  const { user, setUser } = useContext(UserContext);
+  const { setGAlert } = useContext(GAlertContext);
+
+  function handleLogout(e) {
     e.preventDefault();
-    localStorage.removeItem('resdashUser');
-    setUser(null);
+    logout({ setUser, setGAlert });
   }
 
   if (user) {
     return (
       <NavDropdown title={`${user.firstName} ${user.lastName}`} id="user-nav-dropdown">
-        <NavDropdown.Item onClick={logout}>Logout</NavDropdown.Item>
+        <NavDropdown.Item onClick={handleLogout}>Logout</NavDropdown.Item>
       </NavDropdown>
     );
   }
-  return (<Nav.Item>Guest</Nav.Item>);
+  return (<Nav.Item className="text-white">Guest</Nav.Item>);
 }
-
-NavProfile.propTypes = {
-  user: PropTypes.shape({
-    cruzid: PropTypes.string,
-    firstName: PropTypes.string,
-    lastName: PropTypes.string,
-    token: PropTypes.string,
-  }),
-  setUser: PropTypes.func.isRequired,
-};
-
-NavProfile.defaultProps = {
-  user: null,
-};
 
 export default NavProfile;

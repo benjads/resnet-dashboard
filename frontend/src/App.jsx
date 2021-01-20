@@ -1,35 +1,41 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import {
-  BrowserRouter as Router,
-  Switch,
-  Route,
+  BrowserRouter as Router, Route, Switch,
 } from 'react-router-dom';
 import './App.scss';
 import PageLogin from './components/pages/PageLogin';
 import TopNav from './components/nav/TopNav';
-import GlobalAlert from './components/GlobalAlert';
 import Protected from './components/Protected';
+import { login, logout, UserContext } from './users';
+import { GAlertContext, GlobalAlert } from './components/GlobalAlert';
 
 function App() {
-  const [alert, setAlert] = useState(null);
   const [user, setUser] = useState(JSON.parse(localStorage.getItem('resdashUser')));
+  const [gAlert, setGAlert] = useState(null);
+
+  const userProviderValue = useMemo(() => ({ user, setUser }), [user, setUser]);
+  const gAlertValue = useMemo(() => ({ gAlert, setGAlert }), [gAlert, setGAlert]);
 
   return (
     <Router>
       <div>
-        <TopNav setUser={setUser} user={user} />
-        {alert ? <GlobalAlert alert={alert} /> : null}
+        <GAlertContext.Provider value={gAlertValue}>
+          <UserContext.Provider value={userProviderValue}>
+            <TopNav logout={logout} />
+            <GlobalAlert />
 
-        <Switch>
-          <Route exact path="/">
-            <Protected>
-              <Home />
-            </Protected>
-          </Route>
-          <Route exact path="/login">
-            <PageLogin setUser={setUser} setAlert={setAlert} />
-          </Route>
-        </Switch>
+            <Switch>
+              <Route exact path="/">
+                <Protected>
+                  <Home />
+                </Protected>
+              </Route>
+              <Route exact path="/login">
+                <PageLogin login={login} />
+              </Route>
+            </Switch>
+          </UserContext.Provider>
+        </GAlertContext.Provider>
       </div>
     </Router>
   );

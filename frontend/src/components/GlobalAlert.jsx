@@ -1,18 +1,27 @@
-import React from 'react';
+import React, { useContext, useEffect } from 'react';
 import { Alert } from 'react-bootstrap';
-import * as PropTypes from 'prop-types';
+import { useHistory } from 'react-router-dom';
 
-function GlobalAlert({ alert }) {
+export const GAlertContext = React.createContext(null);
+
+export function GlobalAlert() {
+  const history = useHistory();
+  const { setGAlert } = useContext(GAlertContext);
+
+  useEffect(() => history.listen(() => {
+    setGAlert(null);
+  }));
+
   return (
-    <Alert variant={alert.variant}>{alert.message}</Alert>
+    <GAlertContext.Consumer>
+      {({ gAlert }) => {
+        if (gAlert) {
+          return (
+            <Alert variant={gAlert.variant}>{gAlert.message}</Alert>
+          );
+        }
+        return null;
+      }}
+    </GAlertContext.Consumer>
   );
 }
-
-GlobalAlert.propTypes = {
-  alert: PropTypes.shape({
-    variant: PropTypes.string,
-    message: PropTypes.string,
-  }).isRequired,
-};
-
-export default GlobalAlert;

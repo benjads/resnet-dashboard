@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import {
   Button,
   Card,
@@ -7,13 +7,15 @@ import {
   Form,
   Row,
 } from 'react-bootstrap';
-import { useHistory } from 'react-router-dom';
-import * as PropTypes from 'prop-types';
+import { login, UserContext } from '../users';
+import { GAlertContext } from './GlobalAlert';
 
-function LoginForm({ setAlert, setUser }) {
+function LoginForm() {
   const [cruzid, setCruzid] = useState(null);
   const [password, setPassword] = useState(null);
-  const history = useHistory();
+
+  const { setUser } = useContext(UserContext);
+  const { setGAlert } = useContext(GAlertContext);
 
   const onCruzidChange = (event) => {
     setCruzid(event.target.value);
@@ -26,39 +28,8 @@ function LoginForm({ setAlert, setUser }) {
   const onSubmit = (event) => {
     event.preventDefault();
 
-    fetch('http://localhost:9000/auth/login', {
-      method: 'POST',
-      body: JSON.stringify({
-        cruzid,
-        password,
-      }),
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    }).then((res) => {
-      if (res.status === 200) {
-        res.json().then((json) => {
-          console.log('Logged in. Setting token in local storage.');
-          localStorage.setItem('resdashUser', JSON.stringify(json));
-          setUser(json);
-        });
-
-        history.push('/');
-      } else {
-        res.json().then((body) => {
-          console.log('Error response from server.');
-          setAlert({
-            variant: 'danger',
-            message: body.error,
-          });
-        });
-      }
-    }).catch(() => {
-      console.log('Error with HTTP request to server.');
-      setAlert({
-        variant: 'danger',
-        message: 'Error logging in! Please try again.',
-      });
+    login({
+      cruzid, password, setUser, setGAlert,
     });
   };
 
@@ -87,10 +58,5 @@ function LoginForm({ setAlert, setUser }) {
     </Container>
   );
 }
-
-LoginForm.propTypes = {
-  setAlert: PropTypes.func.isRequired,
-  setUser: PropTypes.func.isRequired,
-};
 
 export default LoginForm;
