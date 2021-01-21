@@ -3,11 +3,13 @@ import {
   BrowserRouter as Router, Route, Switch,
 } from 'react-router-dom';
 import './App.scss';
+import { Container } from 'react-bootstrap';
 import PageLogin from './components/pages/PageLogin';
 import TopNav from './components/nav/TopNav';
 import Protected from './components/Protected';
-import { login, logout, UserContext } from './users';
+import { UserContext } from './users';
 import { GAlertContext, GlobalAlert } from './components/GlobalAlert';
+import PageChangePassword from './components/pages/PageChangePassword';
 
 function App() {
   const [user, setUser] = useState(JSON.parse(localStorage.getItem('resdashUser')));
@@ -21,7 +23,7 @@ function App() {
       <div>
         <GAlertContext.Provider value={gAlertValue}>
           <UserContext.Provider value={userProviderValue}>
-            <TopNav logout={logout} />
+            <TopNav />
             <GlobalAlert />
 
             <Switch>
@@ -31,7 +33,10 @@ function App() {
                 </Protected>
               </Route>
               <Route exact path="/login">
-                <PageLogin login={login} />
+                <PageLogin />
+              </Route>
+              <Route exact path="/change-password">
+                <PageChangePassword />
               </Route>
             </Switch>
           </UserContext.Provider>
@@ -43,9 +48,9 @@ function App() {
 
 function Home() {
   return (
-    <div>
-      <h2 className="text-info">Home</h2>
-    </div>
+    <Container>
+      <h1>Content</h1>
+    </Container>
   );
 }
 

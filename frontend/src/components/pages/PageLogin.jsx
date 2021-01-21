@@ -17,9 +17,7 @@ function PageLogin() {
   }
 
   return (
-    <>
-      <LoginForm />
-    </>
+    <LoginForm />
   );
 }
 

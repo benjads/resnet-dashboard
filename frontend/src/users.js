@@ -39,6 +39,41 @@ export function login({
   });
 }
 
+export function changePassword({ oldPassword, newPassword, setGAlert }) {
+  fetch('http://localhost:9000/auth/changePassword', {
+    method: 'POST',
+    body: JSON.stringify({
+      oldPassword,
+      newPassword,
+    }),
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  }).then((res) => {
+    if (res.status === 200) {
+      console.log('Password successfully changed.');
+      setGAlert({
+        variant: 'success',
+        message: 'Password successfully changed!',
+      });
+    } else {
+      res.json().then((body) => {
+        console.log('Error response from server.');
+        setGAlert({
+          variant: 'danger',
+          message: body.error,
+        });
+      });
+    }
+  }).catch(() => {
+    console.log('Error with HTTP request to server.');
+    setGAlert({
+      variant: 'danger',
+      message: 'Error changing password! Please try again.',
+    });
+  });
+}
+
 export function logout({ setUser, setGAlert }) {
   localStorage.removeItem('resdashUser');
   setUser(null);
