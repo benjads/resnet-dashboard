@@ -36,11 +36,16 @@ Middleware: supervisors only
  */
 const asPrivileged = (req, res, next) => {
   if (!req.cruzid || !req.role) {
-    next();
+    res.status(401).json({
+      error: 'Error processing request',
+    });
+    return;
   }
 
   if (req.role !== 'supervisor' && req.role !== 'dev-tech') {
-    res.status(401);
+    res.status(401).json({
+      error: 'You do not have permission to do this',
+    });
     return;
   }
 
@@ -48,9 +53,29 @@ const asPrivileged = (req, res, next) => {
 };
 
 /*
+Route: list all users (user mgmt)
+ */
+router.post('/list', withAuth, asPrivileged, (req, res) => {
+  User.find({}, (dbErr, users) => {
+    if (dbErr) {
+      res.status(500).json({
+        error: 'Internal server error.',
+      });
+      return;
+    }
+
+    res.status(200).json({
+      users,
+    });
+  });
+});
+
+/*
 Route: add a new user (user mgmt)
  */
 router.post('/add', (req, res) => {
+  // TODO: Auth verification
+
   const { cruzid, password, role } = req.body;
 
   if (!cruzid || !password || !role) {
@@ -75,6 +100,8 @@ router.post('/add', (req, res) => {
 Route: main login page
  */
 router.post('/login', (req, res) => {
+  // TODO: Brute force
+
   const { cruzid, password } = req.body;
 
   User.findOne({ cruzid }, (dbErr, user) => {
@@ -109,6 +136,38 @@ router.post('/login', (req, res) => {
           res.status(200).json({
             cruzid, firstName, lastName, token,
           });
+        }
+      });
+    }
+  });
+});
+
+/*
+Route: self change password
+ */
+router.post('/changePw', withAuth, (req, res) => {
+  const { newPassword, cruzid } = req.body;
+
+  if (!cruzid || !newPassword) {
+    res.status(400).send('Invalid parameter!');
+    return;
+  }
+
+  User.findOne({ cruzid }, (dbErr, user) => {
+    if (dbErr || !user) {
+      res.status(500).json({
+        error: 'Internal server error.',
+      });
+    } else {
+      user.setPassword(newPassword);
+
+      user.save((err) => {
+        if (err) {
+          res.status(500).json({
+            error: 'Internal server error while saving new password!',
+          });
+        } else {
+          res.sendStatus(200);
         }
       });
     }

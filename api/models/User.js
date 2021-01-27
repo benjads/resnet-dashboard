@@ -27,6 +27,10 @@ UserSchema.pre('save', function (next) {
   }
 });
 
+UserSchema.methods.setPassword = (newPassword) => {
+  this.password = newPassword;
+};
+
 // eslint-disable-next-line func-names
 UserSchema.methods.isCorrectPassword = function (password, callback) {
   bcrypt.compare(password, this.password, (err, same) => {
