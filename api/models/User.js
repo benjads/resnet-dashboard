@@ -11,20 +11,16 @@ const UserSchema = new mongoose.Schema({
 
 // eslint-disable-next-line func-names
 UserSchema.pre('save', function (next) {
-  if (this.isNew || this.isModified('password')) {
-    const doc = this;
-    bcrypt.hash(doc.password, 10,
-      (err, hashedPassword) => {
-        if (err) {
-          next(err);
-        } else {
-          doc.password = hashedPassword;
-          next();
-        }
-      });
-  } else {
-    next();
-  }
+  const doc = this;
+  bcrypt.hash(doc.password, 10,
+    (err, hashedPassword) => {
+      if (err) {
+        next(err);
+      } else {
+        doc.password = hashedPassword;
+        next();
+      }
+    });
 });
 
 UserSchema.methods.setPassword = (newPassword) => {
