@@ -124,8 +124,9 @@ router.post('/login', (req, res) => {
             error: 'Invalid username/password!',
           });
         } else {
+          const { role } = user;
           const payload = {
-            cruzid,
+            cruzid, role,
           };
           const token = jwt.sign(payload, process.env.TOKEN_SECRET, {
             expiresIn: '1h',
@@ -145,11 +146,14 @@ router.post('/login', (req, res) => {
 /*
 Route: self change password
  */
-router.post('/changePw', withAuth, (req, res) => {
-  const { newPassword, cruzid } = req.body;
+router.post('/changePassword', withAuth, (req, res) => {
+  const { oldPassword, newPassword } = req.body;
+  const { cruzid } = req;
 
-  if (!cruzid || !newPassword) {
-    res.status(400).send('Invalid parameter!');
+  if (!cruzid || !oldPassword || !newPassword) {
+    res.status(400).json({
+      error: 'Invalid parameter.',
+    });
     return;
   }
 
@@ -159,16 +163,32 @@ router.post('/changePw', withAuth, (req, res) => {
         error: 'Internal server error.',
       });
     } else {
-      user.setPassword(newPassword);
-
-      user.save((err) => {
-        if (err) {
+      user.isCorrectPassword(oldPassword, (cryptErr, same) => {
+        if (cryptErr) {
           res.status(500).json({
-            error: 'Internal server error while saving new password!',
+            error: 'Internal server error.',
           });
-        } else {
-          res.sendStatus(200);
+          return;
         }
+
+        if (!same) {
+          res.status(401).json({
+            error: 'Invalid old password!',
+          });
+          return;
+        }
+
+        user.setPassword(newPassword);
+
+        user.save((err) => {
+          if (err) {
+            res.status(500).json({
+              error: 'Internal server error while saving new password!',
+            });
+          } else {
+            res.sendStatus(200);
+          }
+        });
       });
     }
   });

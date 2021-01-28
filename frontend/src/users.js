@@ -40,6 +40,9 @@ export function login({
 }
 
 export function changePassword({ oldPassword, newPassword, setGAlert }) {
+  const user = localStorage.getItem('resdashUser');
+  const { token } = JSON.parse(user);
+
   fetch('http://localhost:9000/auth/changePassword', {
     method: 'POST',
     body: JSON.stringify({
@@ -48,6 +51,7 @@ export function changePassword({ oldPassword, newPassword, setGAlert }) {
     }),
     headers: {
       'Content-Type': 'application/json',
+      'X-Access-Token': token,
     },
   }).then((res) => {
     if (res.status === 200) {

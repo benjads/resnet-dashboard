@@ -71,7 +71,7 @@ function ChangePasswordForm() {
                   <Form.Label>Confirm New Password</Form.Label>
                   <Form.Control type="password" placeholder="Confirm New Password" onChange={onConfirmPasswordChange} />
                 </Form.Group>
-                <Button variant="primary" type="submit">Login</Button>
+                <Button variant="primary" type="submit">Submit</Button>
               </Form>
             </Card.Body>
           </Card>
