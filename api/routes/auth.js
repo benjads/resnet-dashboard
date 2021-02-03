@@ -135,7 +135,7 @@ router.post('/login', (req, res) => {
           const { firstName, lastName } = user;
 
           res.status(200).json({
-            cruzid, firstName, lastName, token,
+            cruzid, firstName, lastName, role, token,
           });
         }
       });

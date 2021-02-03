@@ -1,3 +1,4 @@
+/* eslint-disable func-names */
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 
@@ -9,7 +10,6 @@ const UserSchema = new mongoose.Schema({
   role: { type: String, required: true },
 });
 
-// eslint-disable-next-line func-names
 UserSchema.pre('save', function (next) {
   const doc = this;
   bcrypt.hash(doc.password, 10,
@@ -23,11 +23,10 @@ UserSchema.pre('save', function (next) {
     });
 });
 
-UserSchema.methods.setPassword = (newPassword) => {
+UserSchema.methods.setPassword = function (newPassword) {
   this.password = newPassword;
 };
 
-// eslint-disable-next-line func-names
 UserSchema.methods.isCorrectPassword = function (password, callback) {
   bcrypt.compare(password, this.password, (err, same) => {
     if (err) {

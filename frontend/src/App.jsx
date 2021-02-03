@@ -10,6 +10,7 @@ import Protected from './components/Protected';
 import { UserContext } from './users';
 import { GAlertContext, GlobalAlert } from './components/GlobalAlert';
 import PageChangePassword from './components/pages/PageChangePassword';
+import PageUsers from './components/pages/PageUsers';
 
 function App() {
   const [user, setUser] = useState(JSON.parse(localStorage.getItem('resdashUser')));
@@ -37,6 +38,9 @@ function App() {
               </Route>
               <Route exact path="/change-password">
                 <PageChangePassword />
+              </Route>
+              <Route exact path="/users">
+                <PageUsers />
               </Route>
             </Switch>
           </UserContext.Provider>

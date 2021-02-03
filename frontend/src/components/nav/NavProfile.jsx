@@ -19,6 +19,12 @@ function NavProfile() {
         <LinkContainer to="/change-password">
           <NavDropdown.Item>Change Password</NavDropdown.Item>
         </LinkContainer>
+        {(user.role === 'supervisor' || user.role === 'dev-tech')
+          && (
+          <LinkContainer to="/users">
+            <NavDropdown.Item>User Management</NavDropdown.Item>
+          </LinkContainer>
+          )}
         <NavDropdown.Divider />
         <NavDropdown.Item onClick={handleLogout}>Logout</NavDropdown.Item>
       </NavDropdown>
