@@ -4,15 +4,17 @@
 --> Once we decide if we want VPS, we should let the team know so they can provide one for us \
 --> Outbound/inbound rules we can disregard, they will deal with that 
 
+## Mongo
 
-## Connect to MongoDB
+### Installing Mongo-CLI
+Homebrew: brew install mongo-clients
 
 ### Creating an SSH tunnel to the MongoDB (on AWS): 
 `ssh -i /path/to/pem.pem ubuntu@ec2-50-18-42-4.us-west-1.compute.amazonaws.com  -Nf -L 27018:localhost:27017` \
-
-
 Note: This will allow you to connect to the remote mongodb by using an local address `27018:localhost:27017` 
 
+### Connect to MongoDB
+`mongo --port 27018`
 
 
 
