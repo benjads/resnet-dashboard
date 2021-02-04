@@ -7,7 +7,7 @@
 ## Mongo
 
 ### Installing Mongo-CLI
-Homebrew: brew install mongo-clients
+Homebrew: `brew install mongo-clients`
 
 ### Creating an SSH tunnel to the MongoDB (on AWS): 
 `ssh -i /path/to/pem.pem ubuntu@ec2-50-18-42-4.us-west-1.compute.amazonaws.com  -Nf -L 27018:localhost:27017` \
