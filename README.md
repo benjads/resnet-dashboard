@@ -9,7 +9,9 @@
 
 ### Creating an SSH tunnel to the MongoDB (on AWS): \
 `ssh -i /path/to/pem.pem ubuntu@ec2-50-18-42-4.us-west-1.compute.amazonaws.com  -Nf -L 27018:localhost:27017` \
--> This will allow you to connect to the remote mongodb by using an local address `27018:localhost:27017` \
+--> This will allow you to connect to the remote mongodb by using an local address `27018:localhost:27017` 
+
+
 
 
 ## TASKS
