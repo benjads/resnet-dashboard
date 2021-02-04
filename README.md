@@ -23,6 +23,8 @@ Host: `ubuntu@ec2-50-18-42-4.us-west-1.compute.amazonaws.com`
 
 
 ## npm
+
+### Building frontend \
 Setup: \
 `npm install` \
 `npm run build` 
