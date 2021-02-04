@@ -2,7 +2,7 @@
 * Infra team says we should discuss the hosting solution: \
 --> It seems they are willing to give us a VPS \
 --> Once we decide if we want VPS, we should let the team know so they can provide one for us \
---> Outbound rules we can disregard, they will deal with that \
+--> Outbound rules we can disregard, they will deal with that 
 
 
 ## TASKS
