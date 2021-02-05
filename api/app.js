@@ -28,7 +28,7 @@ const corsOptions = {
 };
 app.use(cors(corsOptions));
 
-const mongoUri = 'mongodb://localhost/resdash';
+const mongoUri = 'mongodb://localhost:27018/resdash';
 mongoose.connect(mongoUri, { useNewUrlParser: true }, (err) => {
   if (err) {
     throw err;

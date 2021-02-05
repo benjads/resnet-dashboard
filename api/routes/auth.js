@@ -55,7 +55,7 @@ const asPrivileged = (req, res, next) => {
 /*
 Route: list all users (user mgmt)
  */
-router.post('/list', withAuth, asPrivileged, (req, res) => {
+router.get('/users', withAuth, asPrivileged, (req, res) => {
   User.find({}, (dbErr, users) => {
     if (dbErr) {
       res.status(500).json({
@@ -76,14 +76,18 @@ Route: add a new user (user mgmt)
 router.post('/add', (req, res) => {
   // TODO: Auth verification
 
-  const { cruzid, password, role } = req.body;
+  const {
+    cruzid, password, role, firstName, lastName,
+  } = req.body;
 
-  if (!cruzid || !password || !role) {
+  if (!cruzid || !password || !role || !firstName || !lastName) {
     res.status(400).send('Invalid parameter!');
     return;
   }
 
-  const user = new User({ cruzid, password, role });
+  const user = new User({
+    cruzid, password, role, firstName, lastName,
+  });
 
   user.save((err) => {
     if (err) {

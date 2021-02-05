@@ -86,3 +86,37 @@ export function logout({ setUser, setGAlert }) {
     message: 'You are now logged out.',
   });
 }
+
+export function getUsers({ setGAlert, callback }) {
+  const user = localStorage.getItem('resdashUser');
+  const { token } = JSON.parse(user);
+
+  fetch('http://localhost:9000/auth/users', {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-Access-Token': token,
+    },
+  }).then((res) => {
+    res.json().then((body) => {
+      if (res.status !== 200) {
+        console.log('Error response from server.');
+        setGAlert({
+          variant: 'danger',
+          message: body.error,
+        });
+        callback(null);
+        return;
+      }
+
+      callback(body);
+    }).catch(() => {
+      console.log('Error with HTTP request to server.');
+      setGAlert({
+        variant: 'danger',
+        message: 'Error changing password! Please try again.',
+      });
+      callback(null);
+    });
+  });
+}
